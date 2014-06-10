@@ -40,7 +40,7 @@ Builder.load_string("""
 			size_hint_y: 4
 			canvas:
 				Color:
-					rgba: 0, 0, 0, 1
+					rgba: 0, 0, 0, 0.9
 				Rectangle:
 					pos: self.pos
 					size: self.size
