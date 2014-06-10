@@ -15,6 +15,8 @@ This is a simple, yet powerful command line translator with google translate
 behind it. You can also use it as a Python module in your code.
 '''
 import re
+import json
+from textwrap import wrap
 try:
     import urllib2 as request
     from urllib import quote
@@ -32,11 +34,15 @@ class Translator:
                            + string_pattern
                         +r"\]")
 
-    def __init__(self, to_lang, from_lang):
+    def __init__(self, to_lang, from_lang='en'):
         self.from_lang = from_lang
         self.to_lang = to_lang
-   
+
     def translate(self, source):
+        self.source_list = wrap(source, 1000, replace_whitespace=False)
+        return ' '.join(self._get_translation_from_google(s) for s in self.source_list)
+
+    def _get_translation_from_google(self, source):
         json5 = self._get_json5_from_google(source)
         return self._unescape(self._get_translation_from_json5(json5))
 
@@ -62,7 +68,7 @@ class Translator:
         return r.read().decode('utf-8')
 
     def _unescape(self, text):
-        return re.sub(r"\\.?", lambda x:eval('"%s"'%x.group(0)), text)
+        return json.loads('"%s"' % text)
 
 def main():
     import argparse
