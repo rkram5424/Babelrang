@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+import locale
 import random as r
 from translate import Translator
 
@@ -13,10 +14,10 @@ class Babelrang:
 		self.output = self.twist(in_message)
 
 	def twist(self, in_message):
-		start_lang = 'en'# sys.argv[1]
-		last_lang = 'en'# sys.argv[1]
-		sentence =  'lost in translation'#in_message
-		turns = 20 # r.randint(15,25) # I can't decide if I want it to run 20 times or a rand(10,20)
+		start_lang = 'en'
+		last_lang = 'en'
+		sentence =  in_message
+		turns = 20
 
 		first_step = ''
 
@@ -24,16 +25,17 @@ class Babelrang:
 			if start_lang == lang_array[lang][1]:
 				first_step += (lang_array[lang][0])
 
-		steps = (first_step + ' -> ')
+		steps = []
 		for turn in range(turns):
 			rand_int = r.randint(0,len(lang_array)-1)
 			rand_lang = lang_array[rand_int][1]
-			steps += (lang_array[rand_int][0] + ' -> ')
 			translator = Translator(to_lang = rand_lang, from_lang = last_lang)
 			sentence = translator.translate(sentence)
+			if sys.version_info.major == 2:
+				sentence =sentence.encode(locale.getpreferredencoding())
+			steps.append([sentence, rand_lang])
 			print(str(turn + 1)+ '/' + str(turns) + ' (' + lang_array[rand_int][0] + ')')
 			last_lang = rand_lang
-
 		translator = Translator(to_lang = start_lang, from_lang = last_lang)
 		sentence = translator.translate(sentence)
 		sentence = sentence.capitalize()
@@ -42,7 +44,6 @@ class Babelrang:
 		sentence = sentence.replace(' \'', '\'')
 		if sentence[len(sentence) - 1] != '.':
 			sentence += '.'
-		steps += first_step
 		# print('\n' + steps)
 		# print('\n' + sentence)
 		return [steps, sentence]

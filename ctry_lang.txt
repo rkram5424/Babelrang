@@ -12,7 +12,7 @@ Croatian,hr,hr
 Czech,cs,cz
 Danish,da,dk
 Dutch,nl,nl
-English,en,gb
+English,en,us
 Estonian,et,ee
 Filipino,tl,ph
 Finnish,fi,fi
