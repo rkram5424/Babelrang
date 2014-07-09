@@ -34,13 +34,10 @@ class MainScreen(Screen):
 		translation = in_message
 		out_message = ''
 
-		steps_progbar = ProgressBar(max = 20)
-		steps_progbar.value = 0
-		popup = Popup(content=steps_progbar, auto_dismiss=False)
-		popup.open()
+		self.ids.steps_progbar.value = 0
 
 		for index in range(20):
-			steps_progbar.value += 1 
+			self.ids.steps_progbar.value += 1 
 
 			rand_int = r.randint(0,len(self.lang_array)-1)
 			to_lang = self.lang_array[rand_int][1]
@@ -53,7 +50,7 @@ class MainScreen(Screen):
 			line_box.add_widget(step_text)
 			self.ids.result_grid.add_widget(line_box)
 		out_message = self.translate(translation, native_lang, from_lang)[0]
-		popup.dismiss()
+		self.ids.popup.dismiss()
 		self.ids.out_message.text = out_message
 
 Builder.load_string("""
@@ -64,6 +61,8 @@ Builder.load_string("""
 			source: 'Art/bg_whole_fancy.jpg'
 			size: self.size
 	BoxLayout:
+		id: bl
+		popup: popup.__self__
 		orientation: 'vertical'
 		Image:
 			size_hint_y: 0.15
@@ -87,7 +86,9 @@ Builder.load_string("""
 				Button:
 					id: throw_button
 					text: 'Throw'
-					on_press: root.throw_button(in_message.text)
+					on_press: 
+						bl.popup.open()
+						root.throw_button(in_message.text)
 			BoxLayout:
 				size_hint_y: 7
 				canvas:
@@ -110,6 +111,14 @@ Builder.load_string("""
 				hint_text: 'Result'
 				multiline: True
 				readonly: True
+		Popup:
+			id: popup
+			on_parent: if self.parent == bl: bl.remove_widget(self)
+			title: "Translating..."
+			ProgressBar:
+				id: steps_progbar
+				max: 20
+
 """)
 
 class BabelrangApp(App):
