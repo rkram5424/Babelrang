@@ -1,5 +1,9 @@
-<ion-view view-title="Browse">
+<ion-view view-title="History">
   <ion-content>
-    <h1>History</h1>
+    <div class="list card" ng-repeat="hist in history">
+      <a ng-href="#/throw/{{hist.id}}" class="item">
+        {{hist.text}}
+      </a>
+    </div>
   </ion-content>
 </ion-view>
